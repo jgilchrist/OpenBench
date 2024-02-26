@@ -62,6 +62,7 @@ REPORT_INTERVAL  = 30 # Seconds between reports to the Server
 
 IS_WINDOWS = platform.system() == 'Windows' # Don't touch this
 IS_LINUX   = platform.system() != 'Windows' # Don't touch this
+IS_DARWIN  = platform.system() == 'Darwin'
 
 
 class Configuration:
@@ -1129,7 +1130,11 @@ def build_cutechess_command(config, dev_cmd, base_cmd, scale_factor, timestamp, 
     flags += ' ' + Cutechess.book_settings(config, cutechess_idx)
     flags += ' ' + Cutechess.pgnout_settings(config, timestamp, cutechess_idx)
 
-    return ['cutechess-ob.exe', './cutechess-ob'][IS_LINUX] + flags
+    return get_cutechess_binary() + flags
+
+def get_cutechess_binary():
+    if IS_DARWIN: return 'cutechess-cli'
+    return ['cutechess-ob.exe', './cutechess-ob'][IS_LINUX]
 
 def run_and_parse_cutechess(config, command, cutechess_idx, results_queue, abort_flag):
 
