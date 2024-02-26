@@ -414,9 +414,10 @@ def collect_github_info(errors, request, field):
         return (None, None)
 
     # Extract the bench from the web form, or from the commit message
-    if not (bench := determine_bench(request, field, data['commit']['message'])):
-        errors.append('Unable to parse a Bench for %s' % (branch))
-        return (None, None)
+    # if not (bench := determine_bench(request, field, data['commit']['message'])):
+    #     errors.append('Unable to parse a Bench for %s' % (branch))
+    #     return (None, None)
+    bench = 0
 
     # Public Engines: Construct the .zip download and return everything
     if not private:
