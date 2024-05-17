@@ -119,6 +119,10 @@
             <div class="anchor-container">
                 <a class="mt-1 anchorbutton btn-blue" onclick="copy_text('long-statblock', true)">Copy Stat Block</a>
             </div>
+
+            <div class="anchor-container">
+                <a class="mt-1 anchorbutton btn-blue" onclick="copy_text('penta-results', false)">Copy Pentanomial Results</a>
+            </div>
         {% endif %}
 
         <!-- PGN Download Button -->
@@ -147,6 +151,7 @@
         <!-- Elo, (SPRT/LRR if SPRT, otherwise CONF), Games -->
         {% if type == "TEST" %}
             <pre class="long-statblock" id="long-statblock">{{workload|longStatBlock|linebreaksbr}}</pre>
+            <pre style="display: none;" class="penta-results" id="penta-results">{{workload|pentaResults}}</pre>
         {% elif type == "TUNE" %}
             <pre class="long-statblock" id="long-statblock">{{workload|shortStatBlock|linebreaksbr}}</pre>
         {% elif type == "DATAGEN" %}

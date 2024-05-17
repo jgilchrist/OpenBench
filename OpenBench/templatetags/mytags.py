@@ -114,6 +114,19 @@ def longStatBlock(test):
 
     return '\n'.join(lines)
 
+def pentaResults(test):
+
+    assert test.test_mode != 'SPSA'
+
+    threads     = int(OpenBench.utils.extract_option(test.dev_options, 'Threads'))
+    hashmb      = int(OpenBench.utils.extract_option(test.dev_options, 'Hash'))
+    timecontrol = test.dev_time_control + ['s', '']['=' in test.dev_time_control]
+    type_text   = 'SPRT' if test.test_mode == 'SPRT' else 'Conf'
+
+    lower, elo, upper = OpenBench.stats.Elo(test.results())
+
+    return "%d %d %d %d %d" % test.as_penta()
+
 def testResultColour(test):
 
     if test.passed:
@@ -207,6 +220,7 @@ register.filter('twoDigitPrecision', twoDigitPrecision)
 register.filter('gitDiffLink', gitDiffLink)
 register.filter('shortStatBlock', shortStatBlock)
 register.filter('longStatBlock', longStatBlock)
+register.filter('pentaResults', pentaResults)
 register.filter('testResultColour', testResultColour)
 register.filter('sumAttributes', sumAttributes)
 register.filter('insertCommas', insertCommas)
