@@ -84,6 +84,14 @@ def restore_workload(request, profile, workload):
 
 def tweak_workload(request, profile, workload):
 
+    try:
+        workload.elolower = float(request.POST['elolower'])
+    except: pass
+
+    try:
+        workload.eloupper = float(request.POST['eloupper'])
+    except: pass
+
     try: # Priority can be any integer value
         workload.priority = int(request.POST['priority'])
     except: pass

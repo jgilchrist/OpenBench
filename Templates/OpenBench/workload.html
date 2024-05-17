@@ -163,6 +163,15 @@
             {% csrf_token %}
             <div class="form">
                 <div class="col-full">
+                    <div class="row">
+                        <label for="elo0">Elo0</label>
+                        <input value="{{workload.elolower}}" id="elolower" name="elolower">
+                    </div>
+
+                    <div class="row">
+                        <label for="elo1">Elo1</label>
+                        <input value="{{workload.eloupper}}" id="eloupper" name="eloupper">
+                    </div>
 
                     <div class="row">
                         <label for="priority">Priority</label>
