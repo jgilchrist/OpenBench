@@ -503,4 +503,67 @@ def update_test(request, machine):
         updated=timezone.now()
     )
 
+    discord_webhook_url = os.environ["OPENBENCH_DISCORD_WEBHOOK_URL"]
+
+    # Send update to webhook, if it exists
+    if test.finished and discord_webhook_url:
+        lower, elo, upper = OpenBench.stats.Elo(test.results())
+        error = max(upper - elo, elo - lower)
+        elo   = OpenBench.templatetags.mytags.twoDigitPrecision(elo)
+        error = OpenBench.templatetags.mytags.twoDigitPrecision(error)
+        h0 = OpenBench.templatetags.mytags.twoDigitPrecision(test.elolower)
+        h1 = OpenBench.templatetags.mytags.twoDigitPrecision(test.eloupper)
+        outcome = 'passed' if test.passed else 'failed'
+
+        if test.test_mode == 'GAMES':
+            mode_string = f'{test.max_games} games'
+        else:
+            mode_string = f'SPRT [{h0}, {h1}]'
+
+        if test.passed:
+            color = 0x37F769
+        elif test.wins < test.losses:
+            color = 0xFA4E4E
+        else:
+            color = 0xFEFF58
+
+        requests.post(discord_webhook_url, json={
+            'username': test.engine,
+            'embeds': [{
+                'title': f'Test `{test.dev.name}` vs `{test.base.name}` {outcome}',
+                'url': request.build_absolute_uri(f'/test/{testid}'),
+                'color': color,
+                'author': { "name": test.author },
+                'fields': [
+                    {
+                        'name': 'Time Control',
+                        'value': f'{test.timecontrol}s',
+                    },
+                    {
+                        'name': 'Mode',
+                        'value': mode_string,
+                    },
+                    {
+                        'name': 'Wins',
+                        'value': f'{test.wins}',
+                        'inline': True,
+                    },
+                    {
+                        'name': 'Losses',
+                        'value': f'{test.losses}',
+                        'inline': True,
+                    },
+                    {
+                        'name': 'Draws',
+                        'value': f'{test.draws}',
+                        'inline': True,
+                    },
+                    {
+                        'name': 'Elo',
+                        'value': f'{elo} ± {error} (95%)',
+                    },
+                ]
+            }]
+        })
+
     return [{}, { 'stop' : True }][test.finished]
